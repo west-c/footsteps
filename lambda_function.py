@@ -6,8 +6,6 @@ import os
 import boto3
 
 # AWS Setting
-# AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-# AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
 S3_BUKET_NAME = 'footsteps-token'
 TOKEN_OBJECT_KEY_NAME = 'token'
 
@@ -22,9 +20,6 @@ PIXELA_503_RETRY_COUNT = 10
 
 token_tmp_file_name = '/tmp/token_tmp.txt'
 
-# s3 = boto3.resource('s3',
-#                     aws_access_key_id=AWS_ACCESS_KEY_ID, 
-#                     aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
 s3 = boto3.resource('s3')
 bucket = s3.Bucket(S3_BUKET_NAME)
 
@@ -78,6 +73,3 @@ def plot_pixela(steps_dict: dict):
             break
         retries += 1
         print('503 encounted: retries = ' + str(retries))
-
-# if __name__ == "__main__":
-#     lambda_handler('hoge', 'hoge')
