@@ -24,7 +24,7 @@ jobs:
         cp requirements.txt requirements.txt.orig 
         sed '/boto3/d' requirements.txt.orig > requirements.txt
         pip install --target ./package -r requirements.txt
-        cp my-deployment-package.zip package
+        cp lambda_function.py package
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
