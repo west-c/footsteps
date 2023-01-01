@@ -14,14 +14,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9' 
 
     - name: Install dependencies
       run: |
-        # TODO: remove boto3
+        sed '/boto3/d' requirements.txt
         pip install --target ./package -r requirements.txt
 
     - name: Create package
