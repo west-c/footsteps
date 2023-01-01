@@ -1,0 +1,50 @@
+name: Build Package
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9"]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        # TODO: remove boto3
+        pip install --target ./package -r requirements.txt
+
+    - name: Create package
+      run: |
+        cd package
+        zip -r ../my-deployment-package.zip .
+        cd ..
+        zip -g my-deployment-package.zip lambda_function.py
+
+    - name: Copy artifact
+      run:
+        mkdir -p build && cp my-deployment-package.zip build/
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: my-artifact
+        path: build
+
+    - name: Test with pytest
+      run: |
+        pytest
