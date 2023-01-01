@@ -21,8 +21,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sed '/boto3/d' requirements.txt
-        cat requirements.txt
+        cp requirements.txt requirements.txt.orig 
+        sed '/boto3/d' requirements.txt.orig > requirements.txt
         pip install --target ./package -r requirements.txt
 
     - name: Create package
