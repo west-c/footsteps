@@ -19,15 +19,26 @@ jobs:
       with:
         python-version: '3.9' 
 
-    - name: Create package
+    - name: Install dependencies
       run: |
         cp requirements.txt requirements.txt.orig 
         sed '/boto3/d' requirements.txt.orig > requirements.txt
         pip install --target ./package -r requirements.txt
-        cp lambda_function.py package
+
+    - name: Create package
+      run: |
+        cd package
+        zip -r ../my-deployment-package.zip .
+        cd ..
+        zip -g my-deployment-package.zip lambda_function.py
+
+    - name: Copy artifact
+      run: |
+        mkdir -p build
+        cp my-deployment-package.zip build/
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: my-deployment-package
-        path: package
+        name: my-artifact
+        path: build
