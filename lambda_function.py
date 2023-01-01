@@ -24,26 +24,25 @@ s3 = boto3.resource('s3')
 bucket = s3.Bucket(S3_BUKET_NAME)
 
 def lambda_handler(event, context):
-    yesterday = datetime.date.today() - datetime.timedelta(days=1)
-    from_date = yesterday - datetime.timedelta(days=1)
-    steps_list = get_steps_list(from_date, yesterday)
+    print(datetime.datetime.today())
+    today = datetime.date.today()
+    yesterday = today - datetime.timedelta(days=1)
+    steps_list = get_steps_list(yesterday, today)
 
     for steps_dict in steps_list:
         plot_pixela(steps_dict)
     
-    return 'success!'
-
 def get_steps_list(from_date: datetime, to_date: datetime):
     authd_client = fitbit.Fitbit(FITBIT_API_CLIENT_ID, FITBIT_API_CLIENT_SECRET,
-                                 access_token = load_fitbit_token('access_token', bucket), 
-                                 refresh_token = load_fitbit_token('refresh_token', bucket),
+                                 access_token = load_fitbit_token('access_token'), 
+                                 refresh_token = load_fitbit_token('refresh_token'),
                                  refresh_cb = replace_fitbit_token)
     activities_dict = authd_client.time_series('activities/steps',
                                                base_date = from_date,
                                                end_date  = to_date)
     return activities_dict['activities-steps']
 
-def load_fitbit_token(key: str, bucket):
+def load_fitbit_token(key: str):
     bucket.download_file(TOKEN_OBJECT_KEY_NAME, token_tmp_file_name)
     with open(token_tmp_file_name) as f:
         token_str = f.read()
@@ -68,8 +67,10 @@ def plot_pixela(steps_dict: dict):
     retries = 0
     while True:
         res = requests.post(PIXELA_URL, headers=headers, json=body)
-        if res.status_code != 503 or retries >= PIXELA_503_RETRY_COUNT:
+        if res.status_code != 503:
             print(date_str + ': ' + steps + ' steps is plotted.')
             break
+        elif retries >= PIXELA_503_RETRY_COUNT:
+            raise Exception(date_str + ': ' + steps + ' retry count exceeded.')
         retries += 1
         print('503 encounted: retries = ' + str(retries))
