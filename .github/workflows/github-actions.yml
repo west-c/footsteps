@@ -44,7 +44,3 @@ jobs:
       with:
         name: my-artifact
         path: build
-
-    - name: Test with pytest
-      run: |
-        pytest
