@@ -6,8 +6,8 @@ import os
 import boto3
 
 # AWS Setting
-S3_BUKET_NAME = 'footsteps-token'
-TOKEN_OBJECT_KEY_NAME = 'token'
+S3_BUKET_NAME = os.environ['S3_BUKET_NAME']
+TOKEN_OBJECT_KEY_NAME = os.environ['TOKEN_OBJECT_KEY_NAME']
 
 # Fitbit Setting
 FITBIT_API_CLIENT_ID = os.environ['FITBIT_API_CLIENT_ID']
@@ -67,10 +67,16 @@ def plot_pixela(steps_dict: dict):
     retries = 0
     while True:
         res = requests.post(PIXELA_URL, headers=headers, json=body)
-        if res.status_code != 503:
+
+        if res.status_code == 200:
             print(date_str + ': ' + steps + ' steps is plotted.')
             break
-        elif retries >= PIXELA_503_RETRY_COUNT:
-            raise Exception(date_str + ': ' + steps + ' retry count exceeded.')
-        retries += 1
-        print('503 encounted: retries = ' + str(retries))
+        elif res.status_code == 503:
+            if retries < PIXELA_503_RETRY_COUNT:
+                retries += 1
+                print('503 encounted: retries = ' + str(retries))
+            else:
+                raise Exception(date_str + ': ' + steps + ' retry count exceeded.')
+        else:
+            raise Exception(date_str + ': ' + res.status_code + ' is happened. ' + res.text)
+
