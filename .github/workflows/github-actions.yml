@@ -1,44 +1,26 @@
-name: Build Package
+name: Daily Job
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  schedule:
+    - cron: '0 16 * * *'  # JST 01:00
 
 jobs:
-  build:
-
+  run-python-job:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9' 
+        python-version: 3.10
 
-    - name: Install dependencies
+    - name: Install Dependencies
       run: |
-        cp requirements.txt requirements.txt.orig 
-        sed '/boto3/d' requirements.txt.orig > requirements.txt
-        pip install --target ./package -r requirements.txt
+        pip install -r requirements.txt
 
-    - name: Create package
+    - name: Run Python Script
       run: |
-        cd package
-        zip -r ../my-deployment-package.zip .
-        cd ..
-        zip -g my-deployment-package.zip lambda_function.py
-
-    - name: Copy artifact
-      run: |
-        mkdir -p build
-        cp my-deployment-package.zip build/
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: my-artifact
-        path: build
+        python footsteps.py
