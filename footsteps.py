@@ -23,8 +23,7 @@ token_tmp_file_name = '/tmp/token_tmp.txt'
 s3 = boto3.resource('s3')
 bucket = s3.Bucket(S3_BUKET_NAME)
 
-def lambda_handler(event, context):
-    print(datetime.datetime.today())
+def main():
     today = datetime.date.today()
     yesterday = today - datetime.timedelta(days=1)
     steps_list = get_steps_list(yesterday, today)
@@ -80,3 +79,5 @@ def plot_pixela(steps_dict: dict):
         else:
             raise Exception(date_str + ': ' + res.status_code + ' is happened. ' + res.text)
 
+if __name__ == "__main__":
+    main()
