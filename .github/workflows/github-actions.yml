@@ -28,7 +28,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         FITBIT_API_CLIENT_ID: ${{ secrets.FITBIT_API_CLIENT_ID }}
         FITBIT_API_CLIENT_SECRET: ${{ secrets.FITBIT_API_CLIENT_SECRET }}
-        PIXELA_URL: ${{ env.PIXELA_URL }}
+        PIXELA_URL: ${{ vars.PIXELA_URL }}
         PIXELA_USER_TOKEN: ${{ secrets.PIXELA_USER_TOKEN }}
         S3_BUKET_NAME: ${{ secrets.S3_BUKET_NAME }}
         TOKEN_OBJECT_KEY_NAME: ${{ secrets.TOKEN_OBJECT_KEY_NAME }}
