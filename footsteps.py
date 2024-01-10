@@ -73,11 +73,11 @@ def plot_pixela(steps_dict: dict):
         elif res.status_code == 503:
             if retries < PIXELA_503_RETRY_COUNT:
                 retries += 1
-                print('503 encounted: retries = ' + str(retries))
+                print(f'503 encounted: retries = {retries}')
             else:
-                raise Exception(date_str + ': ' + steps + ' retry count exceeded.')
+                raise Exception(f'{date_str}: {steps} retry count exceeded.')
         else:
-            raise Exception(date_str + ': ' + res.status_code + ' is happened. ' + res.text)
+            raise Exception(f'{date_str}: {res.status_code} is happened. {res.text}')
 
 if __name__ == "__main__":
     main()
