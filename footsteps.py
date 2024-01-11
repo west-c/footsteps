@@ -68,7 +68,7 @@ def plot_pixela(steps_dict: dict):
         res = requests.post(PIXELA_URL, headers=headers, json=body)
 
         if res.status_code == 200:
-            print(date_str + ': ' + steps + ' steps is plotted.')
+            print(f'{date_str}: {steps} steps is plotted.')
             break
         elif res.status_code == 503:
             if retries < PIXELA_503_RETRY_COUNT:
